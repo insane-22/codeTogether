@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketProvider";
 import Swal from "sweetalert2";
 import Client from "../components/Client";
+import CodeEditor from "../components/CodeEditor";
 
 const Room = () => {
   const navigate = useNavigate();
@@ -64,12 +65,12 @@ const Room = () => {
   };
 
   const leaveRoom = async () => {
-    socket.emit("leave room",{roomId});
+    socket.emit("leave room", { roomId });
     // socket.disconnect()
-      navigate("/", {
-        replace: true,
-        state: {},
-      });
+    navigate("/", {
+      replace: true,
+      state: {},
+    });
   };
 
   return (
@@ -94,6 +95,7 @@ const Room = () => {
         </button>
       </div>
       <div className="editorWrap">
+        <CodeEditor />
         {/* <Editor
           // socketRef={socketRef}
           // roomId={roomId}

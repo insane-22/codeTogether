@@ -52,9 +52,9 @@ async function updateUsersnCode(io, socket, roomId) {
     newUser: null,
     socketId: null,
   });
-  // if (users.length === 0) {
-  //   delete roomCodeMap(roomId);
-  // }
+  if (users.length === 0) {
+    delete roomCodeMap(roomId);
+  }
 }
 
 io.on("connection", (socket) => {
@@ -80,11 +80,52 @@ io.on("connection", (socket) => {
         socketId: socket.id,
       });
     });
+
+    if (roomId in roomCodeMap) {
+      io.to(socket.id).emit("on language change", {
+        languageUsed: roomCodeMap[roomId].languageUsed,
+      });
+      io.to(socket.id).emit("on code change", {
+        code: roomCodeMap[roomId].code,
+      });
+    }
   });
 
   socket.on("leave room", ({ roomId }) => {
     socket.leave(roomId);
     updateUsersnCode(io, socket, roomId);
+  });
+
+  socket.on("update language", ({ roomId, languageUsed }) => {
+    if (roomId in roomCodeMap) {
+      roomCodeMap["languageUsed"] = languageUsed;
+    } else {
+      roomCodeMap[roomId] = { languageUsed };
+    }
+  });
+
+  socket.on("syncing the language", ({ roomId }) => {
+    if (roomId in roomCodeMap) {
+      socket.in(roomId).emit("on language change", {
+        languageUsed: roomCodeMap[roomId].languageUsed,
+      });
+    }
+  });
+
+  socket.on("update code", ({ roomId, code }) => {
+    if (roomId in roomCodeMap) {
+      roomCodeMap[roomId]["code"] = code;
+    } else {
+      roomCodeMap[roomId] = { code };
+    }
+  });
+
+  socket.on("syncing the code", ({ roomId }) => {
+    if (roomId in roomCodeMap) {
+      socket
+        .in(roomId)
+        .emit("on code change", { code: roomCodeMap[roomId].code });
+    }
   });
 
   socket.on("disconnecting", () => {

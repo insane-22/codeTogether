@@ -1,0 +1,23 @@
+.CodeMirror {
+    min-height: calc(100vh - 20px);
+    font-size: 20px;
+    line-height: 1.6;
+    padding-top: 20px;
+}
+
+.languageFieldWrapper{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    min-width: 250px;
+    max-width: 50px;
+}
+
+.languageField{
+    border: none;
+    appearance: none;
+    width: 100%;
+    color: white;
+    background-color: #2873ff;
+    font-size: 20px;
+}
